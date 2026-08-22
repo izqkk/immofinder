@@ -8,7 +8,7 @@
  *
  * https://operations.osmfoundation.org/policies/nominatim/
  */
-const FALLBACK_USER_AGENT = "ImmoFinder (self-hosted; https://github.com/izqkk/immofinder-public)";
+const FALLBACK_USER_AGENT = "ImmoFinder (self-hosted; https://github.com/izqkk/immofinder)";
 
 // `||` rather than `??` on purpose: Compose always defines the variable, so an
 // unset value arrives as an empty string — which `??` would happily keep, leaving

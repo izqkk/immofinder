@@ -17,8 +17,8 @@ saves you from building something that then has to be reshaped.
 ## Setting up
 
 ```bash
-git clone https://github.com/izqkk/immofinder-public.git
-cd immofinder-public/webui
+git clone https://github.com/izqkk/immofinder.git
+cd immofinder/webui
 npm ci
 ```
 

@@ -121,7 +121,7 @@ scraped listing.
 tools on the host.
 
 ```bash
-git clone https://github.com/izqkk/immofinder-public.git immofinder
+git clone https://github.com/izqkk/immofinder.git
 cd immofinder
 cp .env.example .env
 ```
