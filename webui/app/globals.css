@@ -1,0 +1,192 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design language
+ * ---------------
+ * "Charcoal + Amber" palette: charcoal carries every action (primary buttons, links),
+ * amber is the accent (focus ring, active navigation). Green/amber/red stay reserved
+ * alongside them for score and status.
+ * Surfaces separate by fill, not by lines — cards sit on a slightly tinted page
+ * background, borders are only used where real separation is needed.
+ */
+
+:root {
+  /* --- layout metrics --- */
+  --nav-h: 56px; /* sticky top bar */
+  --tab-h: 64px; /* mobile bottom tab bar */
+  --status-h: 0px; /* background status band — set at runtime by BackgroundStatusBar */
+
+  /* --- radius scale --- */
+  --radius: 10px;
+  --radius-token-sm: 6px;
+  --radius-token-md: 10px;
+  --radius-token-lg: 14px;
+
+  /* --- action colour: charcoal (the "Charcoal + Amber" palette) --- */
+  --brand: oklch(0.28 0.018 262);
+  --brand-hover: oklch(0.22 0.018 262);
+  --brand-foreground: oklch(0.99 0.004 250);
+  --brand-soft: oklch(0.94 0.008 262);
+  --brand-soft-foreground: oklch(0.32 0.02 262);
+
+  /* --- accent: amber (focus ring, active navigation, highlights) --- */
+  --accent-amber: oklch(0.76 0.15 78);
+  --accent-amber-strong: oklch(0.66 0.15 72);
+
+  /* --- score semantics --- */
+  --score-good: oklch(0.6 0.12 160);
+  --score-good-foreground: oklch(0.99 0.01 150);
+  --score-good-soft: oklch(0.95 0.05 160);
+  --score-mid: oklch(0.76 0.15 78);
+  --score-mid-foreground: oklch(0.26 0.06 78);
+  --score-mid-soft: oklch(0.96 0.06 82);
+  --score-weak: oklch(0.57 0.16 25);
+  --score-weak-foreground: oklch(0.99 0.01 25);
+  --score-weak-soft: oklch(0.95 0.04 25);
+
+  /* --- surfaces --- */
+  --surface: oklch(0.98 0.004 256); /* page background */
+  --surface-raised: oklch(1 0 0); /* cards, sheets, bars */
+  --surface-sunken: oklch(0.955 0.006 256); /* wells, tracks, inputs */
+  --elevation-card: 0 1px 2px oklch(0.21 0.02 260 / 6%), 0 1px 3px oklch(0.21 0.02 260 / 4%);
+
+  /* --- shadcn tokens (kept working, wired to the tokens above) --- */
+  --background: var(--surface);
+  --foreground: oklch(0.21 0.02 260);
+  --card: var(--surface-raised);
+  --card-foreground: oklch(0.21 0.02 260);
+  --popover: var(--surface-raised);
+  --popover-foreground: oklch(0.21 0.02 260);
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  --secondary: oklch(0.96 0.006 256);
+  --secondary-foreground: oklch(0.26 0.02 260);
+  --muted: oklch(0.965 0.005 256);
+  --muted-foreground: oklch(0.53 0.02 258);
+  --accent: oklch(0.955 0.008 256);
+  --accent-foreground: oklch(0.26 0.02 260);
+  --destructive: var(--score-weak);
+  --destructive-foreground: var(--score-weak-foreground);
+  --border: oklch(0.91 0.006 258);
+  --input: oklch(0.9 0.006 258);
+  /* Focus ring and active navigation carry the amber accent, not the charcoal. */
+  --ring: var(--accent-amber-strong);
+}
+
+.dark {
+  /* In dark mode charcoal on a dark surface would be invisible — the action colour
+     therefore flips to a light charcoal with dark text. Amber stays the accent. */
+  --brand: oklch(0.93 0.006 262);
+  --brand-hover: oklch(0.86 0.008 262);
+  --brand-foreground: oklch(0.2 0.015 262);
+  --brand-soft: oklch(0.3 0.014 262);
+  --brand-soft-foreground: oklch(0.92 0.008 262);
+
+  --accent-amber: oklch(0.8 0.14 80);
+  --accent-amber-strong: oklch(0.8 0.14 80);
+
+  --score-good: oklch(0.72 0.13 160);
+  --score-good-foreground: oklch(0.19 0.04 160);
+  --score-good-soft: oklch(0.3 0.06 160);
+  --score-mid: oklch(0.8 0.14 80);
+  --score-mid-foreground: oklch(0.22 0.05 80);
+  --score-mid-soft: oklch(0.32 0.06 80);
+  --score-weak: oklch(0.66 0.17 24);
+  --score-weak-foreground: oklch(0.19 0.05 24);
+  --score-weak-soft: oklch(0.31 0.08 24);
+
+  --surface: oklch(0.17 0.012 260);
+  --surface-raised: oklch(0.215 0.014 260);
+  --surface-sunken: oklch(0.145 0.012 260);
+  --elevation-card: 0 1px 2px oklch(0 0 0 / 40%), 0 1px 3px oklch(0 0 0 / 24%);
+
+  --background: var(--surface);
+  --foreground: oklch(0.97 0.004 250);
+  --card: var(--surface-raised);
+  --card-foreground: oklch(0.97 0.004 250);
+  --popover: var(--surface-raised);
+  --popover-foreground: oklch(0.97 0.004 250);
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  --secondary: oklch(0.27 0.014 260);
+  --secondary-foreground: oklch(0.97 0.004 250);
+  --muted: oklch(0.26 0.014 260);
+  --muted-foreground: oklch(0.71 0.015 258);
+  --accent: oklch(0.27 0.014 260);
+  --accent-foreground: oklch(0.97 0.004 250);
+  --destructive: var(--score-weak);
+  --destructive-foreground: var(--score-weak-foreground);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: var(--accent-amber-strong);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* new tokens as Tailwind utilities: bg-brand, text-score-good, bg-surface-raised, … */
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-amber-strong: var(--accent-amber-strong);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-soft-foreground: var(--brand-soft-foreground);
+  --color-score-good: var(--score-good);
+  --color-score-good-foreground: var(--score-good-foreground);
+  --color-score-good-soft: var(--score-good-soft);
+  --color-score-mid: var(--score-mid);
+  --color-score-mid-foreground: var(--score-mid-foreground);
+  --color-score-mid-soft: var(--score-mid-soft);
+  --color-score-weak: var(--score-weak);
+  --color-score-weak-foreground: var(--score-weak-foreground);
+  --color-score-weak-soft: var(--score-weak-soft);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+
+  --radius-sm: var(--radius-token-sm);
+  --radius-md: var(--radius-token-md);
+  --radius-lg: var(--radius-token-lg);
+  --radius-xl: calc(var(--radius-token-lg) + 4px);
+
+  --shadow-card: var(--elevation-card);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: ui-sans-serif, system-ui, sans-serif;
+  }
+  /* focus ring: always visible on keyboard focus, always in the accent hue */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-token-sm);
+  }
+}

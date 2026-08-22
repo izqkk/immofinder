@@ -1,0 +1,17 @@
+# Keep the build context small and free of anything host-specific.
+node_modules
+.next
+out
+coverage
+data
+.git
+.gitignore
+.env*
+*.log
+Dockerfile
+.dockerignore
+
+# Nothing the runtime image needs
+*.tsbuildinfo
+**/*.test.ts
+vitest.config.*

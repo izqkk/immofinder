@@ -1,0 +1,58 @@
+# Third-party notices
+
+ImmoFinder is licensed under the MIT License (see LICENSE), with the exception
+noted below.
+
+## Fredy
+
+ImmoFinder is a companion UI for **Fredy** — https://github.com/orangecoding/fredy —
+by Christian Kellner. Fredy does the scraping; ImmoFinder reads the database
+Fredy writes and talks to Fredy's HTTP API. Fredy is **not** bundled with,
+vendored into, or redistributed by this repository: `docker compose` pulls the
+official image `ghcr.io/orangecoding/fredy` at runtime, and no Fredy source is
+included here.
+
+Fredy is licensed under **Apache-2.0 with a Commons Clause and an Attribution
+and Naming Clause**, which makes it source-available rather than OSI open
+source. If you build on Fredy itself, read its LICENSE first:
+https://github.com/orangecoding/fredy/blob/master/LICENSE
+
+### Derived file
+
+`webui/lib/search-url.ts` contains `immoscoutWebToMobile()` and its lookup
+tables, which are a TypeScript port of Fredy's `immoscout-web-translator.js`.
+It exists so that the ImmoFinder job wizard can validate an ImmobilienScout24
+search URL exactly the way Fredy will later scrape it, without depending on a
+Fredy source checkout.
+
+That function and its tables are:
+
+    Copyright (c) Christian Kellner
+    Licensed under Apache-2.0 with Commons Clause and Attribution/Naming Clause
+    Source: https://github.com/orangecoding/fredy
+
+The rest of `webui/lib/search-url.ts`, and every other file in this repository,
+is MIT-licensed as stated in LICENSE.
+
+## Data and services
+
+ImmoFinder makes requests to third-party services at runtime:
+
+- **OpenStreetMap / Nominatim** (https://nominatim.openstreetmap.org) for
+  geocoding addresses. Map data © OpenStreetMap contributors, available under
+  the Open Database License. Nominatim is a free, rate-limited community
+  service — ImmoFinder honours its usage policy (one request per second, a
+  descriptive User-Agent, and a hard stop on 429/5xx). Set
+  `GEOCODER_USER_AGENT` to something that identifies your deployment.
+- **Google Maps** is linked to for directions. No request is made server-side;
+  the link only opens in the visitor's browser when they click it.
+- **The listing portals** (ImmobilienScout24, Immowelt, Kleinanzeigen,
+  WG-Gesucht) are contacted to check whether a listing is still online and to
+  validate a search URL when creating a job. See the disclaimer in README.md.
+
+## Trademarks
+
+ImmobilienScout24, Immowelt, Kleinanzeigen and WG-Gesucht are trademarks of
+their respective owners. ImmoFinder is an independent, unofficial project and
+is in no way affiliated with, authorised by, endorsed by, or connected to any
+of them.

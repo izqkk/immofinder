@@ -1,0 +1,34 @@
+# === ImmoFinder ===
+# Only code is versioned. Databases, configuration and build output stay out.
+
+# --- Runtime data: both SQLite databases and Fredy's config ---
+# The glob also covers the per-instance directories from docs/multi-instance.md
+# (DATA_DIR=./data-berlin and friends).
+/data*/
+*.db
+*.db-shm
+*.db-wal
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+*.pem
+
+# --- Node / Next.js build artefacts ---
+node_modules/
+.next/
+out/
+build/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# --- Editors / OS ---
+.DS_Store
+.idea/
+.vscode/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*

@@ -1,0 +1,74 @@
+# ImmoFinder — Fredy (the scraper) plus the ImmoFinder web UI.
+#
+# Everything configurable lives in `.env` next to this file; copy `.env.example`
+# and fill it in before the first start. Nothing here needs editing for a normal
+# single-instance setup.
+#
+#   docker compose up -d
+#
+# The two services share one directory tree under ${DATA_DIR}:
+#   ${DATA_DIR}/fredy/conf   Fredy's configuration
+#   ${DATA_DIR}/fredy/db     Fredy's listings database — mounted read-only into the web UI
+#   ${DATA_DIR}/webui        ImmoFinder's own database (swipe decisions, settings, cache)
+
+name: ${COMPOSE_PROJECT_NAME:-immofinder}
+
+services:
+  fredy:
+    image: ghcr.io/orangecoding/fredy:${FREDY_IMAGE_TAG:-master}
+    restart: unless-stopped
+    # tini as PID 1 reaps orphaned headless-Chromium processes. Without it, browser
+    # based scraping (WG-Gesucht in particular) leaves zombies behind until the
+    # container hits its PID limit and no browser starts at all.
+    init: true
+    # Chromium starves on Docker's 64 MB default shared memory and crashes in a loop;
+    # core dumps from those crashes can fill a disk overnight, hence the 0 limit.
+    shm_size: "512m"
+    ulimits:
+      core: 0
+    volumes:
+      - ${DATA_DIR:-./data}/fredy/conf:/conf
+      - ${DATA_DIR:-./data}/fredy/db:/db
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${FREDY_PORT:-9998}:9998"
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--max-time", "5", "http://localhost:9998/"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: ${FREDY_MEMORY_LIMIT:-2G}
+
+  webui:
+    build:
+      context: ./webui
+    restart: unless-stopped
+    volumes:
+      - ${DATA_DIR:-./data}/webui:/app/data
+      # Fredy's database, read-only: ImmoFinder never writes to it.
+      - ${DATA_DIR:-./data}/fredy/db:/fredy-db:ro
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - FREDY_DB_PATH=/fredy-db/listings.db
+      - WEBUI_DB_PATH=/app/data/webui.db
+      - FREDY_API_URL=${FREDY_API_URL:-http://fredy:9998}
+      - FREDY_API_USER=${FREDY_API_USER:-}
+      - FREDY_API_PASSWORD=${FREDY_API_PASSWORD:-}
+      # Access protection. Both are mandatory — without them the app answers 503.
+      - APP_PASSWORD=${APP_PASSWORD:-}
+      - AUTH_SECRET=${AUTH_SECRET:-}
+      - TRUST_PROXY=${TRUST_PROXY:-}
+      - REQUIRE_HTTPS=${REQUIRE_HTTPS:-}
+      - DEFAULT_LOCALE=${DEFAULT_LOCALE:-en}
+      - GEOCODER_USER_AGENT=${GEOCODER_USER_AGENT:-}
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${WEBUI_PORT:-3000}:3000"
+    depends_on:
+      fredy:
+        condition: service_healthy

@@ -1,0 +1,10 @@
+# Next.js / Node artefacts. The repository root ignores runtime data and secrets.
+/node_modules
+/.next/
+/out/
+/coverage
+*.tsbuildinfo
+next-env.d.ts
+
+# Local SQLite database when running the dev server outside Docker
+/data
